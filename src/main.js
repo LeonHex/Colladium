@@ -2,7 +2,7 @@
     let fs = require('fs'),
         readline = require('readline'),
         FlatToNested = require('./libs/FlatToNested'),
-        treeModel = require('./libs/TreeModel');
+        TreeModel = require('./libs/TreeModel');
 
     /*
      * exception handler
@@ -16,12 +16,16 @@
         mockData,
         readL,
         f2nConvertor,
-        nestedJson;
+        nestedJson,
+        treeModel,
+        treeRoot;
 
     // load mock data from json file
     loadFileByPath('./mock-data/gpc_list.json');
     // transfer origin data to nested form
-    formTreeModel(mockData);
+    formNestedData(mockData);
+    // form tree model from nested data
+    formTreeModel(nestedJson);
 
     //read user input from console
     readL = readline.createInterface({
@@ -52,7 +56,10 @@
         }
     }
 
-    function formTreeModel(json) {
+    /* 
+        form nested data from flat form
+     */
+    function formNestedData(json, nestId = 'id', nestParent = 'ancestry', nestChildren = 'children') {
         if (json) {
             /* 
                 cause the data is in flat form
@@ -63,15 +70,25 @@
             // time for a little hack: libs/FlatToNested.js line 35 - 39
             // parent key is lost when nested. this is the 3rd lib's flaw.
             f2nConvertor = new FlatToNested({
-                id: 'id',
-                parent: 'ancestry',
-                children: 'children'
+                id: nestId,
+                parent: nestParent,
+                children: nestChildren
             });
             nestedJson = f2nConvertor.convert(json);
             // for output test data
-            // fs.writeFileSync('./mock-data/gpc_list_nested.json', JSON.stringify(nestedJson));
+            fs.writeFileSync('./mock-data/gpc_list_nested.json', JSON.stringify(nestedJson));
         } else {
             throw (new Error('illegal json data!'));
         }
     }
+
+    /* 
+        form tree model from nested data
+    */
+    function formTreeModel(nested) {
+        treeModel = new TreeModel();
+        treeRoot = treeModel.parse(nested);
+    }
+
+
 })();

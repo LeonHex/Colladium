@@ -59,19 +59,17 @@
                 1. have to get it into hierachy form
                 2. init a treeModel with the hierachy form data
             */
-            //test data
-            const flat = [
-                {value: 111, ancestors: [11,111]},
-                {value: 11, ancestors: [1,11]},
-                {value: 12, ancestors: [1,12]},
-                {value: 1}
-            ];
+
+            // time for a little hack: libs/FlatToNested.js line 35 - 39
+            // parent key is lost when nested. this is the 3rd lib's flaw.
             f2nConvertor = new FlatToNested({
-                id: 'value',
-                parent: 'ancestors'
+                id: 'id',
+                parent: 'ancestry',
+                children: 'children'
             });
-            nestedJson = f2nConvertor.convert(flat);
-            console.log(nestedJson);
+            nestedJson = f2nConvertor.convert(json);
+            // for output test data
+            // fs.writeFileSync('./mock-data/gpc_list_nested.json', JSON.stringify(nestedJson));
         } else {
             throw (new Error('illegal json data!'));
         }

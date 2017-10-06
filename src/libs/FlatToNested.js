@@ -31,6 +31,13 @@ module.exports = (function () {
         flatEl = flat[i];
         id = flatEl[this.config.id];
         parent = flatEl[this.config.parent];
+
+        // ===============================hacked by Leon===============================
+        if(typeof parent == 'string'){
+          parent = String(parent).split('/').pop();
+        }
+        // ===============================hacked by Leon===============================
+
         temp[id] = flatEl;
         if (parent === undefined || parent === null) {
           // Current object has no parent, so it's a root element.

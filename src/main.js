@@ -33,13 +33,30 @@
         output: process.stdout
     });
 
-    // readL.question('Please enter the label you want to find...\n ', (answer) => {
-    //     if (answer && answer != '') {
+    readL.question('Please enter the label you want to find...\n ', (answer) => {
+        if (answer && answer != '') {
+            // print the number of nodes found and each node seperately
+            let nodes = findNodesByLabel(treeRoot, answer);
+            console.log(`There are ${nodes.length} nodes that match the label`);
+            console.log('====================================================');
+            for (node of nodes) {
+                console.log('[NODE]');
+                console.log(JSON.stringify(node.model));
 
-    //     } else {
-    //         // throw (new Error('illegal input!'));
-    //     }
-    // });
+                let pathArr = node.getPath(),
+                    leng = pathArr.length,
+                    pathLbl = [];
+                for (let i = 0; i < leng; i++) {
+                    pathLbl.push('     '.repeat(i) + (i > 0 ? '┗-->' : '') + pathArr[i].model.label)
+                }
+                console.log('[PATH]');
+                console.log(pathLbl.join('\n'));
+            }
+            readL.close();
+        } else {
+            throw (new Error('illegal input!'));
+        }
+    });
 
     /* 
         load file by path
@@ -90,5 +107,18 @@
         treeRoot = treeModel.parse(nested);
     }
 
-
+    /* 
+        find all nodes that has the same label as param lbl
+    */
+    function findNodesByLabel(tree, lbl) {
+        let resultNodes;
+        if (tree && lbl && lbl != "") {
+            resultNodes = tree.all(function (node) {
+                return node.model.label == lbl;
+            });
+        } else {
+            throw (new Error('empty label!'));
+        }
+        return resultNodes;
+    }
 })();

@@ -30,31 +30,31 @@
     //read user input from console
     readL = readline.createInterface({
         input: process.stdin,
-        output: process.stdout
+        output: process.stdout,
+        prompt: '[Enter label]'
     });
 
-    readL.question('Please enter the label you want to find...\n ', (answer) => {
+    readL.prompt();
+
+    readL.on('line', (answer) => {
         if (answer && answer != '') {
             // print the number of nodes found and each node seperately
             let nodes = findNodesByLabel(treeRoot, answer);
-            console.log(`There are ${nodes.length} nodes that match the label`);
-            console.log('====================================================');
+            console.log(`[${nodes.length}] nodes that match the label`);
+            console.log('=============================================');
             for (node of nodes) {
                 console.log('[NODE]');
                 console.log(JSON.stringify(node.model));
 
-                let pathArr = node.getPath(),
-                    leng = pathArr.length,
-                    pathLbl = [];
-                for (let i = 0; i < leng; i++) {
-                    pathLbl.push('     '.repeat(i) + (i > 0 ? '┗-->' : '') + pathArr[i].model.label)
-                }
                 console.log('[PATH]');
-                console.log(pathLbl.join('\n'));
+                console.log(findAncestorsByNode(node));
+                console.log('=============================================');
             }
-            readL.close();
+            readL.prompt();
+            // readL.close();
         } else {
-            throw (new Error('illegal input!'));
+            console.log('Please enter valid label!');
+            readL.prompt();
         }
     });
 
@@ -120,5 +120,30 @@
             throw (new Error('empty label!'));
         }
         return resultNodes;
+    }
+
+    /* 
+        find all ancestor nodes of the param node
+        return a string contains all ancestor label splitted by comma
+    */
+    function findAncestorsByNode(node) {
+        let pathArr,
+            leng,
+            pathLbl = [];
+        if (node) {
+            pathArr = node.getPath();
+            leng = pathArr.length;
+        } else {
+            throw (new Error('invalid node!'));
+        }
+
+        if (pathArr.length > 0) {
+            let resultArr = pathArr.map((item) => {
+                return item.model.label == 'ROOT' ? 'All products' : item.model.label;
+            });
+            return resultArr;
+        } else {
+            return [];
+        }
     }
 })();

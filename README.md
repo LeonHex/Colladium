@@ -16,3 +16,19 @@ Project to track Colladium test coding test
 * It is recommended to develop the program incrementally and preserve the Git/ SVN history to showcase your way of thinking during the development.
 * An simple instruction of how to run the program and test cases should also be included.
 
+
+# Brief introduction
+* The program is meant to run in the node environment
+* The program uses basic nodejs features such as fs, path, readLine, etc
+* The program uses 3rd party libs to handle data
+
+## run program
+Install nodejs, npm, jasmine
+
+* open console and make sure the root path of this project is the current location
+
+* To run the program:
+node src/main.js
+
+* To do run the unit test:
+jasmine
